@@ -10,8 +10,41 @@
 
 int main(int argc, const char * argv[]) {
     @autoreleasepool {
-        // insert code here...
-        NSLog(@"Hello, World!");
+        NSString *path;
+        NSFileManager *fm;
+        NSDirectoryEnumerator *dirEnum;
+        NSArray *dirArray;
+        BOOL flag;
+        
+        // Need to create an instance of the file manager
+        
+        fm = [NSFileManager defaultManager];
+        
+        // Get current working directory path
+        
+        path = [fm currentDirectoryPath];
+        
+        // Enumerate the directory
+        dirEnum = [fm enumeratorAtPath:path];
+        
+        NSLog(@"Contents of %@", path);
+        
+        while ((path = [dirEnum nextObject]) != nil) {
+            NSLog(@"%@", path);
+            
+            [fm fileExistsAtPath:path isDirectory:&flag];
+            
+            if (flag == YES)
+                [dirEnum skipDescendants];
+        }
+        
+        
+        // Another way to enumerate a directory
+        dirArray = [fm contentsOfDirectoryAtPath:[fm currentDirectoryPath] error:NULL];
+        NSLog(@"Contents using contentsOfDirectoryAtPath:error:");
+        
+        for (path in dirArray)
+            NSLog(@"%@", path);
     }
     return 0;
 }
